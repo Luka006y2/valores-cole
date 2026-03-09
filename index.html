@@ -2,47 +2,153 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Error 1024: You are being rate limited</title>
+<title>Access temporarily limited</title>
+
 <style>
 body{
-  background:#f6f6f6;
-  font-family: Arial, sans-serif;
-  text-align:center;
-  padding-top:100px;
+  margin:0;
+  font-family: system-ui, -apple-system, Arial, sans-serif;
+  background:#f6f7fb;
+  color:#222;
 }
 
-.box{
+.header{
+  padding:18px 30px;
+  background:#ffffff;
+  border-bottom:1px solid #e6e6e6;
+  font-weight:600;
+}
+
+.container{
+  max-width:900px;
+  margin:80px auto;
+  padding:20px;
+}
+
+.card{
   background:white;
-  width:500px;
-  margin:auto;
-  padding:30px;
   border-radius:8px;
-  box-shadow:0 0 10px rgba(0,0,0,0.1);
+  padding:40px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.08);
 }
 
 h1{
-  color:#cc0000;
+  margin-top:0;
 }
 
-p{
-  color:#333;
+.subtitle{
+  color:#666;
+  margin-bottom:25px;
+}
+
+.status-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-top:30px;
+}
+
+.status-box{
+  border:1px solid #eee;
+  border-radius:6px;
+  padding:20px;
+  text-align:center;
+}
+
+.ok{
+  color:#2e7d32;
+  font-weight:bold;
+}
+
+.fail{
+  color:#c62828;
+  font-weight:bold;
+}
+
+.info{
+  margin-top:35px;
+  font-size:14px;
+  color:#555;
+}
+
+.footer{
+  margin-top:30px;
+  font-size:13px;
+  color:#777;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="header">
+Security Gateway
+</div>
+
+<div class="container">
+<div class="card">
+
 <h1>Error 1024</h1>
-<h2>You are being rate limited</h2>
+<div class="subtitle">You are being rate limited</div>
 
-<p>You have sent too many requests in a given amount of time.</p>
+<p>You have sent too many requests within a short period of time.  
+Access to this resource has been temporarily restricted.</p>
 
-<p>Please wait a few minutes and try again.</p>
+<div class="status-grid">
 
-<p>If you believe this is an error, contact the site administrator.</p>
+<div class="status-box">
+Visitor<br><br>
+<span class="ok">Working</span>
+</div>
+
+<div class="status-box">
+Network<br><br>
+<span class="ok">Operational</span>
+</div>
+
+<div class="status-box">
+Server<br><br>
+<span class="fail">Rate limited</span>
+</div>
 
 </div>
+
+<div class="info">
+Your IP: <span id="ip">Checking...</span><br>
+Request ID: <span id="rid"></span><br>
+Timestamp: <span id="time"></span>
+</div>
+
+<div class="footer">
+Security filtering system
+</div>
+
+</div>
+</div>
+
+<script>
+
+// generar ID estilo hexadecimal
+function generateID(){
+  return [...Array(16)].map(()=>Math.floor(Math.random()*16).toString(16)).join('');
+}
+
+document.getElementById("rid").textContent = generateID();
+
+// timestamp
+document.getElementById("time").textContent = new Date().toUTCString();
+
+// obtener IP pública
+fetch("https://api.ipify.org?format=json")
+.then(res => res.json())
+.then(data => {
+  document.getElementById("ip").textContent = data.ip;
+})
+.catch(()=>{
+  document.getElementById("ip").textContent = "Unavailable";
+});
+
+</script>
 
 </body>
 </html>
